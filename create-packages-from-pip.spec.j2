@@ -1,0 +1,57 @@
+#
+# spec file for package {{obs_name}}
+#
+# Copyright (c) 2019 SUSE LINUX GmbH, Nuernberg, Germany.
+#
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. The license for this file, and modifications and additions to the
+# file, is the same license as for the pristine package itself (unless the
+# license for the pristine package is not an Open Source License, in which
+# case the license is the MIT License). An "Open Source License" is a
+# license that conforms to the Open Source Definition (Version 1.9)
+# published by the Open Source Initiative.
+
+# Please submit bugfixes or comments via http://bugs.opensuse.org/
+#
+
+
+Name:           {{obs_name}}
+Version:        {{version}}
+Release:        0
+# FIXME
+Summary:        dummy summary
+# FIXME
+License:        FIXME
+Group:          Development/Sources
+Url:            {{url}}
+# git clone {{git_url}}
+Source:         {{pypi_name}}
+BuildArch:      noarch
+BuildRequires:  git-core
+BuildRequires:  python3-pbr
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-setuptools_scm
+BuildRequires:  python3-cffi
+BuildRequires:  python3-Cython
+BuildRequires:  python3-Sphinx
+BuildRequires:  python3-pytest-runner
+BuildRequires:  python3-docutils
+BuildRequires:  python3-traceback2
+
+%description
+
+%install
+mkdir -p %{buildroot}/usr/share/python-wheels
+cd %{_sourcedir}/{{pypi_name}}
+# Sometimes there is no setup.py in the root, but multiple else where. Find the first one that has the shortest path.
+python3 $( find -name 'setup.py' | awk '{ print( length($0), $0 ) }' | sort -n | cut -d" " -f2- | head -n1 ) sdist --dist-dir=%{buildroot}/usr/share/python-wheels/
+
+%files
+%defattr(-,root,root)
+%dir /usr/share/python-wheels
+# FIXME can't use the pypi-name here, as e.g. sometimes - becomes _ in the sdist archive or other variations
+/usr/share/python-wheels/*
+
+%changelog
+
